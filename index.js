@@ -8,10 +8,7 @@ const hasher = require('simple-pass-hasher')
 
 function createJwt (payload, secret){
 	if ( ! payload ) throw new Error('Payload is required')
-	if ( ! secret ) throw new Error('Secret is required')
-
-	let headerJson = { 'typ': 'JWT', 'alg': 'HS256' }
-	let payloadJson = payload
+	if ( ! secret ) throw new Error('Secret is required')	
 
 	let header = createHeader()
 	payload = createPayload()
@@ -21,11 +18,13 @@ function createJwt (payload, secret){
 	let sign = createSignature()
 
 	function createHeader () {
-		return stringToBase64(JSON.stringify(headerJson))
+		return stringToBase64(JSON.stringify({ 'typ': 'JWT', 'alg': 'HS256' }))
 	}
 
 	function createPayload () {
-		return stringToBase64(JSON.stringify(payloadJson))
+		let pay = isObject(payload) ? JSON.stringify(payload) : payload
+		
+		return stringToBase64(pay)
 	}
 
 	function createSignature () {
@@ -47,7 +46,7 @@ function createJwt (payload, secret){
 	return jwt()
 }
 
-function isValid (jwt, secret) {
+function isValid (jwt, secret, property) {
 	if ( ! jwt ) throw new Error('Jwt is required')
 	if ( ! secret ) throw new Error('Secret is required')
 	if ( ! jwt.split ) return false
@@ -71,7 +70,7 @@ function isValid (jwt, secret) {
 						hmac: true
 					})
 
-	return authHash.compare(args, validator)
+	return authHash.compare(args, validator) ? ! isExpired(jwt, property) : false
 }
 
 function decodeJwt (jwt, secret) {
@@ -93,20 +92,31 @@ function decodeJwt (jwt, secret) {
 	}
 }
 
-function jwtExpired (jwt, secret, property) {
-	if ( ! jwt ) throw new Error('Jwt is required')
+function jwtExpired (jwt, secret, property) {	
 	if ( ! isValid(jwt, secret) ) return true	
+	
+	return isExpired(jwt, property)
+}
+
+function isExpired (jwt, property) {
+	if ( ! jwt ) throw new Error('Jwt is required')
+
 	property = property || 'exp'
 
-	let exp = resolveJwtProperty(jwt, secret, property, 'payload')
+	let exp = getProperty(jwt, property, 'payload')
 
 	return exp <= Date.now()
 }
 
-function resolveJwtProperty (jwt, secret, property, fragment) {
-	if ( ! jwt ) throw new Error('Jwt is required')
-	if ( ! property ) throw new Error('Property is required')
+function resolveJwtProperty (jwt, secret, property, fragment) {	
 	if ( ! isValid(jwt, secret) ) throw new Error('Jwt validation failed')
+
+	return getProperty(jwt, property, fragment)
+}
+
+function getProperty (jwt, property, fragment) {
+	if ( ! jwt ) throw new Error('Jwt is required')	
+	if ( ! property ) throw new Error('Property is required')
 	fragment = getFragment(fragment)
 
 	let piece = jwt.split('.')[fragment]
@@ -135,6 +145,18 @@ function getFragment (fragment) {
 	} else {
 		throw new Error(`Fragment must be \'header' or \'payload': ${fragment} given`)
 	}
+}
+
+function isObject (bar) {
+	let object = {}
+
+	return isFoo(bar, object)
+}
+
+function isFoo (bar, comparator) {
+	if (typeof(bar) != typeof(comparator)) return false
+
+	return bar.constructor === comparator.constructor
 }
 
 function stringToBase64 (string) {
