@@ -1,0 +1,30 @@
+{
+  "name": "jwt-easy",
+  "version": "1.0.0",
+  "description": "Create, decode and validate json web token(jwt)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charliejuc/jwt-easy.git"
+  },
+  "keywords": [
+    "create",
+    "jwt",
+    "decode",
+    "jwt",
+    "validate",
+    "jwt",
+    "json",
+    "web",
+    "token"
+  ],
+  "author": "Juan Carlos Fernández | @charliejuc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/charliejuc/jwt-easy/issues"
+  },
+  "homepage": "https://github.com/charliejuc/jwt-easy#readme"
+}
