@@ -33,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/charliejuc/jwt-easy/issues"
   },
-  "homepage": "https://github.com/charliejuc/jwt-easy#readme"
+  "homepage": "https://github.com/charliejuc/jwt-easy#readme",
+  "dependencies": {
+    "simple-pass-hasher": "^1.1.1"
+  }
 }
