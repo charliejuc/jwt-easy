@@ -1,4 +1,4 @@
-# Jwt easier - Json Web Token Utils
+# Jwt easy - Json Web Token Utils
 
 ## How to use it?
 ### Basic Usage

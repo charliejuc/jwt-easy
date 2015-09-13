@@ -1,6 +1,6 @@
 'use strict'
 
-//jwt-easier
+//jwt-easy
 //Author: Juan Carlos Fernández || @Charliejuc
 /*----------------------------*/
 
