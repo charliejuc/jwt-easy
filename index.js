@@ -6,9 +6,14 @@
 
 const hasher = require('simple-pass-hasher')
 
-function createJwt (payload, secret){
+function createJwt (payload, options){
 	if ( ! payload ) throw new Error('Payload is required')
-	if ( ! secret ) throw new Error('Secret is required')	
+	if ( ! options.secret ) throw new Error('Secret is required')
+	if ( options.ttl && payload.exp ) {
+		payload.exp += Date.now()
+	}	
+
+	const secret = options.secret
 
 	let header = createHeader()
 	payload = createPayload()
@@ -46,7 +51,7 @@ function createJwt (payload, secret){
 	return jwt()
 }
 
-function isValid (jwt, secret, property) {
+function isValid (jwt, secret) {
 	if ( ! jwt ) throw new Error('Jwt is required')
 	if ( ! secret ) throw new Error('Secret is required')
 	if ( ! jwt.split ) return false
@@ -70,7 +75,7 @@ function isValid (jwt, secret, property) {
 						hmac: true
 					})
 
-	return authHash.compare(args, validator) ? ! isExpired(jwt, property) : false
+	return authHash.compare(args, validator)
 }
 
 function decodeJwt (jwt, secret) {
@@ -142,9 +147,9 @@ function getFragment (fragment) {
 		return payload
 	} else if (fragment === 'header') {
 		return header
-	} else {
-		throw new Error(`Fragment must be \'header' or \'payload': ${fragment} given`)
 	}
+
+	throw new Error(`Fragment must be \'header' or \'payload': ${fragment} given`)
 }
 
 function isObject (bar) {
