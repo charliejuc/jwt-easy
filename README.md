@@ -7,7 +7,7 @@
 
 ```
 
-	const Jwt = require('jwt-easier')
+	const Jwt = require('jwt-easy')
 
 	let payload = {
 		username: 'charliejuc',		
